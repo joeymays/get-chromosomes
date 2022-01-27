@@ -25,9 +25,10 @@ HTML(r"(<p style="text-align:center;">Joey Mays 2022</p>)"),
     titlePanel("Get Chromosomes", windowTitle = "GetChromosomes"),
 
     mainPanel(
-        p("This tool takes a `.csv` file with a column of gene symbols and returns the same file with added genomic metadata including chromsomes, cytobands, and locations for each gene."),
+        p("This tool takes a .csv file with a column of gene symbols and adds genomic metadata including chromsomes, cytobands, ensembl IDs, and locations for each gene."),
+        p("It will also attempt to correct gene symbol aliases to the accepted HGNC symbol."),
         p("The query may take a (literal) minute or two to complete after clicking", strong("\"Run\".")),
-        p("Note: Currently supports gene symbols only (no ensembl IDs)"),
+        p("Note: Currently supports only gene symbols as input (i.e. no ensembl IDs)."),
         
         hr(),
         
@@ -38,14 +39,14 @@ HTML(r"(<p style="text-align:center;">Joey Mays 2022</p>)"),
         radioButtons("symbolClass", "Select Symbol Class", choices = c("Gene Symbol"),),
         
         
-        actionButton(inputId = "runTool", label = "Run", icon("fas fa-running"), style="color: #fff; background-color: #337ab7; border-color: #2e6da4"),
+        actionButton(inputId = "runTool", label = "Run: Get Metadata", icon("fas fa-running"), style="color: #fff; background-color: #00bc8c; border-color: #00a87d"),
         
         hr(),
         
         textOutput(outputId = "readyFlag"),
         
         
-        downloadButton(outputId = "outputCSV", label = "Download .CSV", style="color: #fff; background-color: #337ab7; border-color: #2e6da4"),
+        downloadButton(outputId = "outputCSV", label = "Download Metadata", style="color: #fff; background-color: #337ab7; border-color: #2e6da4"),
         ),
     
     )
@@ -80,7 +81,7 @@ server <- function(input, output) {
         #print("FINISHED")
         vals$geneMetadataOutput <- processMetadata(geneTable())
         #print("FINISHED 2")
-        output$readyFlag <- renderText("Output Not Ready...  Processing...   Download Ready!")
+        output$readyFlag <- renderText("Output Not Ready...   Download Ready!")
     })
     
     #observeEvent(output$readyFlag, {

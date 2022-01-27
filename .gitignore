@@ -3,3 +3,4 @@
 .RData
 .Ruserdata
 gene-CNV.csv
+gene-CNV-short-genesOnly.csv
