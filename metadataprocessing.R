@@ -9,13 +9,19 @@
 
 library(HGNChelper)
 
-processMetadata <- function(inputCSV, metadata){
+processMetadata <- function(inputCSV){
     
     inputCSV.check <- checkGeneSymbols(inputCSV$Gene, unmapped.as.na = T)
     inputCSV$hgnc.symbol.suggestion <- inputCSV.check$Suggested.Symbol
-    metadata$arm <- paste0(metadata$chromosome_name, substr(metadata$band, 1, 1))
-    metadata$band.imprecise <- substr(metadata$band, 1, 3)
-    inputCSV.merge <- merge(inputCSV, metadata, by.x = "hgnc.symbol.suggestion", by.y = "hgnc_symbol", all.x = T)
+    inputCSV.metadata <- getGeneMetadata(gene.list = inputCSV$hgnc.symbol.suggestion)
+    inputCSV.metadata$arm <- paste0(inputCSV.metadata$chromosome_name, substr(inputCSV.metadata$band, 1, 1))
+    inputCSV.metadata$arm.letter <-  substr(inputCSV.metadata$band, 1, 1)
+    inputCSV.metadata$full.band <-  paste0(inputCSV.metadata$chromosome_name, inputCSV.metadata$band)
+    inputCSV.metadata$band.short <- substr(inputCSV.metadata$band, 1, 3)
+    inputCSV.metadata$full.band.short <- paste0(inputCSV.metadata$chromosome_name, inputCSV.metadata$band.short)
+    colnames(inputCSV.metadata)[1] <- "chr"
+    inputCSV.metadata <- inputCSV.metadata[,c(5,4,1,7,6,8,9,11,10,2,3)]
+    inputCSV.merge <- merge(inputCSV, inputCSV.metadata, by.x = "hgnc.symbol.suggestion", by.y = "hgnc_symbol", all.x = T, sort = F)
     
     return(inputCSV.merge)
 }
