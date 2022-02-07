@@ -9,9 +9,10 @@
 
 library(HGNChelper)
 
-processMetadata <- function(inputCSV){
+processMetadata <- function(inputCSV, geneColumn){
     
-    inputCSV.check <- checkGeneSymbols(inputCSV$Gene, unmapped.as.na = T)
+    inputCSV[,geneColumn] <- trimws(inputCSV[,geneColumn])
+    inputCSV.check <- checkGeneSymbols(inputCSV[,geneColumn], unmapped.as.na = T)
     inputCSV$hgnc.symbol.suggestion <- inputCSV.check$Suggested.Symbol
     inputCSV.metadata <- getGeneMetadata(gene.list = inputCSV$hgnc.symbol.suggestion)
     inputCSV.metadata$arm <- paste0(inputCSV.metadata$chromosome_name, substr(inputCSV.metadata$band, 1, 1))

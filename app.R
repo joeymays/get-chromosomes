@@ -79,8 +79,8 @@ server <- function(input, output) {
         #print("PRESSED")
         #geneMetadata <- getGeneMetadata(geneTable()[,input$columnNameInput])
         #print("FINISHED")
-        vals$geneMetadataOutput <- processMetadata(geneTable())
-        #print("FINISHED 2")
+        vals$geneMetadataOutput <- processMetadata(inputCSV = geneTable(), geneColumn = input$columnNameInput)
+        #print(input$columnNameInput)
         output$readyFlag <- renderText("Output Not Ready...   Download Ready!")
     })
     
