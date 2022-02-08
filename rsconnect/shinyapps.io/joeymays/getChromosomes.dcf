@@ -1,14 +1,14 @@
 name: GetChromosomes
-title: GetChromosomes
+title: getChromosomes
 username:
 account: joeymays
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 5521488
-bundleId: 5553994
+bundleId: 5557012
 url: https://joeymays.shinyapps.io/getChromosomes/
-when: 1644271010.78895
-lastSyncTime: 1644271010.78896
+when: 1644333181.59847
+lastSyncTime: 1644333181.59847
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: gene-CNV-short.csv|gene-CNV.csv
+ignoredFiles: gene-CNV-short-genesOnly.csv|gene-CNV-short.csv
