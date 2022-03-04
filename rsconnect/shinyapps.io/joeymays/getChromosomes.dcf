@@ -5,10 +5,10 @@ account: joeymays
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 5521488
-bundleId: 5553994
+bundleId: 5618391
 url: https://joeymays.shinyapps.io/getChromosomes/
-when: 1644271010.78895
-lastSyncTime: 1644271010.78896
+when: 1645812116.25681
+lastSyncTime: 1645812116.25683
 asMultiple: FALSE
 asStatic: FALSE
 ignoredFiles: gene-CNV-short.csv|gene-CNV.csv

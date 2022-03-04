@@ -10,6 +10,11 @@
 #library(BiocManager)
 #options(repos = BiocManager::repositories())
 
+#workaround for file encodings
+#readr:: guess_encoding("~/Desktop/ORFlite_AG2.csv")
+
+
+
 source("getGeneMetadata.R")
 source("metadataprocessing.R")
 
@@ -63,7 +68,7 @@ server <- function(input, output) {
         # User has not uploaded a file yet
         return(NULL)
     }
-    read.csv(infile$datapath, header = T, fileEncoding = "UTF-8-BOM")
+    read.csv(infile$datapath, header = T)
     })
     
     #update Column Selector when GeneTable is input
