@@ -8,7 +8,7 @@
 #
 
 #library(BiocManager)
-#options(repos = BiocManager::repositories())
+options(repos = BiocManager::repositories())
 
 #workaround for file encodings
 #readr:: guess_encoding("~/Desktop/ORFlite_AG2.csv")
@@ -24,7 +24,7 @@ library(shinythemes)
 # Define UI
 ui <- fluidPage(theme = shinytheme("darkly"),
     
-HTML(r"(<p style="text-align:center;">Joey Mays 2022</p>)"),
+HTML(r"(<p style="text-align:center;">Joey Mays - Updated 2022-02-07</p>)"),
                 
     # Application title
     titlePanel("Get Chromosomes", windowTitle = "GetChromosomes"),
@@ -81,12 +81,16 @@ server <- function(input, output) {
     #wait for button press
     observeEvent(input$runTool, {
         output$readyFlag <- renderText("Output Not Ready...  Processing...")
+        progress <- shiny::Progress$new()
+        progress$set(message = "Fetching data", value = 0.5)
+        # Close the progress when this reactive exits (even if there's an error)
+        on.exit(progress$close())
         #print("PRESSED")
         #geneMetadata <- getGeneMetadata(geneTable()[,input$columnNameInput])
         #print("FINISHED")
         vals$geneMetadataOutput <- processMetadata(inputCSV = geneTable(), geneColumn = input$columnNameInput)
         #print(input$columnNameInput)
-        output$readyFlag <- renderText("Output Not Ready...   Download Ready!")
+        output$readyFlag <- renderText("Download Ready!")
     })
     
     #observeEvent(output$readyFlag, {
