@@ -8,6 +8,7 @@ options(repos = BiocManager::repositories())
 
 source("getGeneMetadata.R")
 source("metadataprocessing.R")
+source("tabs.R")
 
 library(shiny)
 library(shinythemes)
@@ -29,12 +30,13 @@ ui <- fluidPage(theme = shinytheme("darkly"),
                                  
                                  actionButton(inputId = "runTool", label = "Run: Get Metadata", icon("fas fa-running"), style="color: #fff; background-color: #00bc8c; border-color: #00a87d"),
                                  
-                                 hr(),
+                                 #hr(),
                                  
-                                 textOutput(outputId = "readyFlag"),
+                                 #textOutput(outputId = "readyFlag"),
                                  
                                  
-                                 downloadButton(outputId = "outputCSV", label = "Download Metadata", style="color: #fff; background-color: #337ab7; border-color: #2e6da4"),
+                                 #downloadButton(outputId = "outputCSV", label = "Download Metadata", style="color: #fff; background-color: #337ab7; border-color: #2e6da4"),
+                                 ui.tabs,
                     ),
                     mainPanel(
                         p("This tool takes a .csv file with a column of gene symbols and adds genomic metadata including chromsomes, cytobands, ensembl IDs, and locations for each gene."),
@@ -57,6 +59,7 @@ server <- function(input, output) {
         # User has not uploaded a file yet
         return(NULL)
     }
+    updateTabsetPanel(inputId = "steps", selected = "beforeclick")
     read.csv(infile$datapath, header = T)
     })
     
@@ -79,7 +82,8 @@ server <- function(input, output) {
         #print("FINISHED")
         vals$geneMetadataOutput <- processMetadata(inputCSV = geneTable(), geneColumn = input$columnNameInput)
         #print(input$columnNameInput)
-        output$readyFlag <- renderText("Download Ready!")
+        #output$readyFlag <- renderText("Download Ready!")
+        updateTabsetPanel(inputId = "steps", selected = "afterclick")
     })
     
     #observeEvent(output$readyFlag, {
