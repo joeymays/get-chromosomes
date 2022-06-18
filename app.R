@@ -38,14 +38,14 @@ ui <- fluidPage(theme = shinytheme("darkly"),
                                  
                                  downloadButton(outputId = "outputCSV", label = "Download Metadata", style="color: #fff; background-color: #337ab7; border-color: #2e6da4"),
                     ),
-                mainPanel(
-                    p("This tool takes a .csv file with a column of gene symbols and adds genomic metadata including chromsomes, cytobands, ensembl IDs, and locations for each gene."),
-                    p("It will also attempt to correct gene symbol aliases to the accepted HGNC symbol."),
-                    p("The query may take a (literal) minute or two to complete after clicking", strong("\"Run\".")),
-                    p("Note: Currently supports only gene symbols as input (i.e. no ensembl IDs)."),
-                    hr(),
-                ),
-)
+                    mainPanel(
+                        p("This tool takes a .csv file with a column of gene symbols and adds genomic metadata including chromsomes, cytobands, ensembl IDs, and locations for each gene."),
+                        p("It will also attempt to correct gene symbol aliases to the accepted HGNC symbol."),
+                        p("The query may take a (literal) minute or two to complete after clicking", strong("\"Run\".")),
+                        p("Note: Currently supports only gene symbols as input (i.e. no ensembl IDs)."),
+                        hr(),
+                    ),
+                )
 )
 
 # Define server logic
