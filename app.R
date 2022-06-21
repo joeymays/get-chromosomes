@@ -9,6 +9,7 @@ options(repos = BiocManager::repositories())
 source("getGeneMetadata.R")
 source("metadataprocessing.R")
 source("tabs.R")
+hg19.gene.lookup <- readRDS("hg19-gene-lookup.RDS")
 
 library(shiny)
 library(shinythemes)
@@ -33,8 +34,6 @@ ui <- fluidPage(theme = shinytheme("darkly"),
                                  #hr(),
                                  
                                  #textOutput(outputId = "readyFlag"),
-                                 
-                                 
                                  #downloadButton(outputId = "outputCSV", label = "Download Metadata", style="color: #fff; background-color: #337ab7; border-color: #2e6da4"),
                                  ui.tabs,
                     ),
