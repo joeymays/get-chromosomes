@@ -1,11 +1,3 @@
-#library(BiocManager)
-options(repos = BiocManager::repositories())
-
-#workaround for file encodings
-#readr:: guess_encoding("~/Desktop/ORFlite_AG2.csv")
-
-
-
 source("getGeneMetadata.R")
 source("metadataprocessing.R")
 source("tabs.R")
@@ -16,7 +8,7 @@ library(shinythemes)
 # Define UI
 ui <- fluidPage(theme = shinytheme("darkly"),
                 
-                HTML(r"(<p style="text-align:center;">Joey Mays - Updated 2022-06-17</p>)"),
+                HTML(r"(<p style="text-align:center;">Joey Mays - Updated 2022-06-21</p>)"),
                 
                 # Application title
                 titlePanel("Get Chromosomes", windowTitle = "GetChromosomes"),
@@ -27,19 +19,13 @@ ui <- fluidPage(theme = shinytheme("darkly"),
                                  
                                  radioButtons("symbolClass", "Select Symbol Class", choices = c("Gene Symbol"),),
                                  
-                                 
                                  actionButton(inputId = "runTool", label = "Run: Get Metadata", icon("fas fa-running"), style="color: #fff; background-color: #00bc8c; border-color: #00a87d"),
                                  
-                                 #hr(),
-                                 
-                                 #textOutput(outputId = "readyFlag"),
-                                 #downloadButton(outputId = "outputCSV", label = "Download Metadata", style="color: #fff; background-color: #337ab7; border-color: #2e6da4"),
                                  ui.tabs,
                     ),
                     mainPanel(
                         p("This tool takes a .csv file with a column of gene symbols and adds genomic metadata including chromsomes, cytobands, ensembl IDs, and locations for each gene."),
                         p("It will also attempt to correct gene symbol aliases to the accepted HGNC symbol."),
-                        p("The query may take a (literal) minute or two to complete after clicking", strong("\"Run\".")),
                         p("Note: Currently supports only gene symbols as input (i.e. no ensembl IDs)."),
                         hr(),
                     ),
@@ -68,31 +54,23 @@ server <- function(input, output) {
     observeEvent(geneTable(), {
         print("Table Loaded")
         updateSelectInput(inputId = "columnNameInput", choices = colnames(geneTable()))
-        output$readyFlag <- renderText("Output Not Ready...")
     })
  
     #wait for button press
     observeEvent(input$runTool, {
-        output$readyFlag <- renderText("Output Not Ready...  Processing...")
         progress <- shiny::Progress$new()
         progress$set(message = "Fetching data", value = 0.5)
-        # Close the progress when this reactive exits (even if there's an error)
+       
+         # Close the progress when this reactive exits (even if there's an error)
         on.exit(progress$close())
+        
         #print("PRESSED")
-        #geneMetadata <- getGeneMetadata(geneTable()[,input$columnNameInput])
-        #print("FINISHED")
+        
         vals$geneMetadataOutput <- processMetadata2(inputCSV = geneTable(), geneColumn = input$columnNameInput, assembly = "hg19", gene.map = hgnc.table.human.20220621(), lookup.table = hg19.gene.lookup())
-        #print(input$columnNameInput)
-        #output$readyFlag <- renderText("Download Ready!")
+
         updateTabsetPanel(inputId = "steps", selected = "afterclick")
     })
     
-    #observeEvent(output$readyFlag, {
-    #    vals$geneMetadataOutput <- processMetadata(geneTable())
-    #    output$readyFlag <- renderText("Output Not Ready...  Processing...   Download Ready!")
-    #})
-    
-
     output$outputCSV <- downloadHandler(
         filename = function() {
             paste0("gene_metadata_",as.character(Sys.Date()),".csv")
@@ -101,8 +79,6 @@ server <- function(input, output) {
             write.csv(vals$geneMetadataOutput, file, row.names = FALSE)
         }
     )
-    
-    
 }
 
 # Run the application 
