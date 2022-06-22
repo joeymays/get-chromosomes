@@ -9,8 +9,6 @@ options(repos = BiocManager::repositories())
 source("getGeneMetadata.R")
 source("metadataprocessing.R")
 source("tabs.R")
-hg19.gene.lookup <- readRDS("hg19-gene-lookup.RDS")
-hgnc.table.human.20220621 <- readRDS(file = "hgnc.table.human.20220621.RDS")
 
 library(shiny)
 library(shinythemes)
@@ -50,6 +48,9 @@ ui <- fluidPage(theme = shinytheme("darkly"),
 # Define server logic
 server <- function(input, output) {
     
+    hg19.gene.lookup <- reactive({readRDS("data/hg19-gene-lookup.RDS")})
+    hgnc.table.human.20220621 <- reactive({readRDS(file = "data/hgnc.table.human.20220621.RDS")})
+    
     vals <- reactiveValues()
 
     #create object geneTable when input file is selected
@@ -80,7 +81,7 @@ server <- function(input, output) {
         #print("PRESSED")
         #geneMetadata <- getGeneMetadata(geneTable()[,input$columnNameInput])
         #print("FINISHED")
-        vals$geneMetadataOutput <- processMetadata2(inputCSV = geneTable(), geneColumn = input$columnNameInput, assembly = "hg19")
+        vals$geneMetadataOutput <- processMetadata2(inputCSV = geneTable(), geneColumn = input$columnNameInput, assembly = "hg19", gene.map = hgnc.table.human.20220621(), lookup.table = hg19.gene.lookup())
         #print(input$columnNameInput)
         #output$readyFlag <- renderText("Download Ready!")
         updateTabsetPanel(inputId = "steps", selected = "afterclick")

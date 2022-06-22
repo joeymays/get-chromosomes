@@ -28,15 +28,15 @@ processMetadata <- function(inputCSV, geneColumn){
     return(inputCSV.merge)
 }
 
-processMetadata2 <- function(inputCSV, geneColumn, assembly){
+processMetadata2 <- function(inputCSV, geneColumn, assembly, gene.map, lookup.table){
     
     #trim whitespace
     inputCSV[,geneColumn] <- trimws(inputCSV[,geneColumn])
     
     #get HUGO symbols & corrections
-    inputCSV.check <- checkGeneSymbols(inputCSV[,geneColumn], unmapped.as.na = T, map = hgnc.table.human.20220621)
+    inputCSV.check <- checkGeneSymbols(inputCSV[,geneColumn], unmapped.as.na = T, map = gene.map)
     inputCSV$hgnc.symbol.suggestion <- inputCSV.check$Suggested.Symbol
-    inputCSV.metadata <- getGeneMetadata2(gene.vector = inputCSV$hgnc.symbol.suggestion, name.type = "symbol" , assembly = "hg19")
+    inputCSV.metadata <- getGeneMetadata2(gene.vector = inputCSV$hgnc.symbol.suggestion, name.type = "symbol" , assembly = "hg19", lookup.table = lookup.table)
     
     #get chr number
     inputCSV.metadata$chr <- substr(inputCSV.metadata$chr, 4, 5)

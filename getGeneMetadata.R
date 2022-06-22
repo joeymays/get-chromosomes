@@ -51,23 +51,23 @@ getGeneMetadata <- function(gene.list, name.type = "symbol", sex.chr = c("X","Y"
   return(gene.metadata)
 }
 
-getGeneMetadata2 <- function(gene.vector, name.type = "symbol", assembly = "hg19"){
+getGeneMetadata2 <- function(gene.vector, name.type = "symbol", assembly = "hg19", lookup.table){
     
-    if(!exists("hg19.gene.lookup")){
-        stop("hg19 Lookup Table not loaded")
+    if(!exists("lookup.table")){
+        stop("Lookup Table not loaded")
     }
     
     if(assembly == "hg19"){
         
         #check for genes not in the lookup table
-        if(!all(gene.vector %in% hg19.gene.lookup$symbol)){
-            to.remove <- setdiff(gene.vector, hg19.gene.lookup$symbol)
+        if(!all(gene.vector %in% lookup.table$symbol)){
+            to.remove <- setdiff(gene.vector, lookup.table$symbol)
             gene.vector <- setdiff(gene.vector, to.remove)
             to.remove.message <- paste0(to.remove, ", ", collapse = "")
             warning(paste("Data for", to.remove.message, "not available."), call. = F)
         }
         
-        lookup.subset <- hg19.gene.lookup[hg19.gene.lookup$symbol %in% gene.vector,]
+        lookup.subset <- lookup.table[lookup.table$symbol %in% gene.vector,]
 
     } else {
         stop(paste0("Assembly ", assembly, " not supported."))
