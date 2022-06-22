@@ -39,8 +39,6 @@ server <- function(input, output) {
     hg19.gene.lookup <- reactive({readRDS("data/hg19-gene-lookup.RDS")})
     hgnc.table.human.20220621 <- reactive({readRDS(file = "data/hgnc.table.human.20220621.RDS")})
     
-    vals <- reactiveValues()
-
     #create object geneTable when input file is selected
     geneTable <- reactive({
         infile <- input$inputCSV
@@ -51,6 +49,14 @@ server <- function(input, output) {
     updateTabsetPanel(inputId = "steps", selected = "beforeclick")
     read.csv(infile$datapath, header = T)
     })
+    
+    geneMetadataOutput <- reactive({
+        req(input$inputCSV)
+        processMetadata2(inputCSV = geneTable(), geneColumn = input$columnNameInput, assembly = "hg19", gene.map = hgnc.table.human.20220621(), lookup.table = hg19.gene.lookup())
+    })
+    
+    #initialize session counter
+    sessionCounter <- reactiveVal(as.numeric(0))
     
     #update Column Selector when GeneTable is input
     observeEvent(geneTable(), {
@@ -68,17 +74,20 @@ server <- function(input, output) {
         
         #print("PRESSED")
         
-        vals$geneMetadataOutput <- processMetadata2(inputCSV = geneTable(), geneColumn = input$columnNameInput, assembly = "hg19", gene.map = hgnc.table.human.20220621(), lookup.table = hg19.gene.lookup())
-
+        geneMetadataOutput()
+        
         updateTabsetPanel(inputId = "steps", selected = "afterclick")
+        
+        sessionCounter(sessionCounter() + 1)
+        print(sessionCounter())
     })
     
     output$outputCSV <- downloadHandler(
         filename = function() {
-            paste0("gene_metadata_",as.character(Sys.Date()),".csv")
+            paste0("gene_metadata_", as.character(Sys.Date()), "_", sprintf("%03d", sessionCounter()),".csv")
         },
         content = function(file) {
-            write.csv(vals$geneMetadataOutput, file, row.names = FALSE)
+            write.csv(x = geneMetadataOutput(), file, row.names = FALSE)
         }
     )
 }
