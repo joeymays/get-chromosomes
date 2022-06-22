@@ -7,7 +7,6 @@ source("tabs.R")
 library(shiny)
 library(shinythemes)
 
-# Define UI
 ui <- fluidPage(theme = shinytheme("darkly"),
                 
                 HTML(r"(<p style="text-align:center;">Joey Mays - Updated 2022-06-21</p>)"),
@@ -17,9 +16,11 @@ ui <- fluidPage(theme = shinytheme("darkly"),
                 sidebarLayout(
                     sidebarPanel(fileInput(inputId = "inputCSV", label = "Upload File", multiple = FALSE, accept = c("text/csv", "text/comma-separated-values,text/plain", ".csv")),
                                  
-                                 selectInput("columnNameInput", "Select Gene Name Column", choices = NULL),
+                                 selectInput("columnNameInput", "Select Symbol Name Column", choices = NULL),
                                  
                                  radioButtons("symbolClass", "Select Symbol Class", choices = c("Gene Symbol"),),
+                                 
+                                 radioButtons("Assembly", "Select Assembly", choices = c("hg19"),),
                                  
                                  actionButton(inputId = "runTool", label = "Run: Get Metadata", icon("fas fa-running"), style="color: #fff; background-color: #00bc8c; border-color: #00a87d"),
                                  
@@ -33,7 +34,7 @@ ui <- fluidPage(theme = shinytheme("darkly"),
                     ),
                 )
 )
-# Define server logic
+
 server <- function(input, output) {
     
     hg19.gene.lookup <- reactive({readRDS("data/hg19-gene-lookup.RDS")})
@@ -92,5 +93,4 @@ server <- function(input, output) {
     )
 }
 
-# Run the application 
 shinyApp(ui = ui, server = server)
