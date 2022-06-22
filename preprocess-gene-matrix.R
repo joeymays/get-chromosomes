@@ -9,6 +9,10 @@ library(tidyverse)
 #non-canonical chromosome seqnames [x]
 #gene name corrections with hugo (at end or for matching?)
 
+hgnc.table.human.20220621 <- getCurrentHumanMap()
+saveRDS(hgnc.table.human.20220621, file = "hgnc.table.human.20220621.RDS")
+
+
 tx <- transcriptsBy(Homo.sapiens, columns = c("SYMBOL"))
 tx <- unlist(tx)
 tx$SYMBOL <- unlist(tx$SYMBOL)

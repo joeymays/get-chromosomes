@@ -8,6 +8,7 @@
 # write.csv(gene.dup.merge, file = "gene-dup-constraints-metadata.csv")\
 
 library(HGNChelper)
+library(dplyr)
 
 processMetadata <- function(inputCSV, geneColumn){
     
@@ -24,5 +25,34 @@ processMetadata <- function(inputCSV, geneColumn){
     inputCSV.metadata <- inputCSV.metadata[,c(5,4,1,7,6,8,9,11,10,2,3)]
     inputCSV.merge <- merge(inputCSV, inputCSV.metadata, by.x = "hgnc.symbol.suggestion", by.y = "hgnc_symbol", all.x = T, sort = F)
     
+    return(inputCSV.merge)
+}
+
+processMetadata2 <- function(inputCSV, geneColumn, assembly){
+    
+    #trim whitespace
+    inputCSV[,geneColumn] <- trimws(inputCSV[,geneColumn])
+    
+    #get HUGO symbols & corrections
+    inputCSV.check <- checkGeneSymbols(inputCSV[,geneColumn], unmapped.as.na = T, map = hgnc.table.human.20220621)
+    inputCSV$hgnc.symbol.suggestion <- inputCSV.check$Suggested.Symbol
+    inputCSV.metadata <- getGeneMetadata2(gene.vector = inputCSV$hgnc.symbol.suggestion, name.type = "symbol" , assembly = "hg19")
+    
+    #get chr number
+    inputCSV.metadata$chr <- substr(inputCSV.metadata$chr, 4, 5)
+    
+    #get arms
+    inputCSV.metadata$arm.letter <-  substr(inputCSV.metadata$cytoband, 1, 1)
+    inputCSV.metadata$arm <- paste0(inputCSV.metadata$chr, inputCSV.metadata$arm.letter)
+    
+    #get cytoband variations
+    inputCSV.metadata$full.band <-  paste0(inputCSV.metadata$chr, inputCSV.metadata$cytoband)
+    inputCSV.metadata$band.short <- unlist(lapply(strsplit(inputCSV.metadata$cytoband, split = ".", fixed = T), function(x) x[1]))
+    inputCSV.metadata$full.band.short <- paste0(inputCSV.metadata$chr, inputCSV.metadata$band.short)
+    
+    #rearrange
+    inputCSV.metadata <- inputCSV.metadata[,c("symbol", "chr", "arm", "cytoband", "arm.letter", "full.band", "band.short", "full.band.short", "start", "end")]
+    inputCSV.merge <- left_join(inputCSV, inputCSV.metadata, by = c( "hgnc.symbol.suggestion" = "symbol")) 
+
     return(inputCSV.merge)
 }
