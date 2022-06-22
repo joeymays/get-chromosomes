@@ -1,3 +1,5 @@
+options(repos = BiocManager::repositories())
+
 source("getGeneMetadata.R")
 source("metadataprocessing.R")
 source("tabs.R")
