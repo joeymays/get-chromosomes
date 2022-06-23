@@ -27,7 +27,7 @@ ui <- fluidPage(theme = shinytheme("darkly"),
                                  ui.tabs,
                     ),
                     mainPanel(
-                        p("This tool takes a .csv file with a column of gene symbols and adds genomic metadata including chromsomes, cytobands, ensembl IDs, and locations for each gene."),
+                        p("This tool takes a .csv or tab-delimited .txt file with a column of gene symbols and adds genomic metadata including chromsomes, cytobands, and locations for each gene."),
                         p("It will also attempt to correct gene symbol aliases to the accepted HGNC symbol."),
                         p("Note: Currently supports only gene symbols as input (i.e. no ensembl IDs)."),
                         hr(),
@@ -42,14 +42,22 @@ server <- function(input, output) {
     
     #create object geneTable when input file is selected
     geneTable <- reactive({
-        infile <- input$inputCSV
-    if (is.null(infile)) {
-        # User has not uploaded a file yet
-        return(NULL)
-    }
-    updateTabsetPanel(inputId = "steps", selected = "beforeclick")
-    read.csv(infile$datapath, header = T)
-    })
+            req(input$inputCSV)
+            
+            ext <- tools::file_ext(input$inputCSV$name)
+            tableInput <- switch(ext,
+                   csv = read.csv(input$inputCSV$datapath, sep = ",", header = T),
+                   txt = read.table(input$inputCSV$datapath, sep = '\t', header = T),
+                   tsv = read.table(input$inputCSV$datapath, sep = '\t', header = T),
+                   validate("Invalid file; Please upload a .csv, .tsv, or .txt file")
+            )
+            
+            updateTabsetPanel(inputId = "steps", selected = "beforeclick")
+            return(tableInput)
+        })
+   
+   # read.csv(infile$datapath, header = T)
+    #})
     
     geneMetadataOutput <- reactive({
         req(input$inputCSV)
