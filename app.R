@@ -9,12 +9,12 @@ library(shinythemes)
 
 ui <- fluidPage(theme = shinytheme("darkly"),
                 
-                HTML(r"(<p style="text-align:center;">Joey Mays - Updated 2022-06-21</p>)"),
+                HTML(r"(<p style="text-align:center;">Joey Mays - Updated 2023-02-07</p>)"),
                 
                 # Application title
                 titlePanel("Get Chromosomes", windowTitle = "GetChromosomes"),
                 sidebarLayout(
-                    sidebarPanel(fileInput(inputId = "inputCSV", label = "Upload File", multiple = FALSE, accept = c("text/csv", "text/comma-separated-values,text/plain", ".csv")),
+                    sidebarPanel(fileInput(inputId = "inputCSV", label = "Upload File", multiple = FALSE, accept = c("text/csv", "text/comma-separated-values", "text/plain", ".csv", ".tsv", ".txt")),
                                  
                                  selectInput("columnNameInput", "Select Symbol Name Column", choices = NULL),
                                  
