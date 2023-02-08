@@ -37,8 +37,8 @@ ui <- fluidPage(theme = shinytheme("darkly"),
 
 server <- function(input, output) {
     
-    hg19.gene.lookup <- reactive({readRDS("data/hg19-gene-lookup.RDS")})
-    hgnc.table.human.20220621 <- reactive({readRDS(file = "data/hgnc.table.human.20220621.RDS")})
+    hg19.gene.lookup <- reactive({readRDS("hg19-gene-lookup.RDS")})
+    hgnc.table.human.20220621 <- reactive({readRDS(file = "hgnc.table.human.20220621.RDS")})
     
     #create object geneTable when input file is selected
     geneTable <- reactive({
